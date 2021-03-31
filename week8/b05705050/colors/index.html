@@ -1,0 +1,126 @@
+<script src="http://code.jquery.com/jquery-3.2.1.min.js"></script>
+
+<script>
+var currentTrial = 1;
+var startTrialTime = 0;
+var trialRunning = false;
+
+$(document).ready(function() {
+	$('#submitButton').hide();
+	$(document).keyup(function (e){
+                if( e.which === 32 ) { StartTrial(); } //space
+                if( e.which === 83 ) { PressedSame(); } //s
+                if( e.which === 68 ) { PressedDifferent(); } //d
+        });
+});
+
+function PressedSame() {
+	if (!trialRunning) {
+		return;
+	}
+	$('#t' + currentTrial + '_response').val("same");
+	NextTrial();
+}
+
+function PressedDifferent() {
+	if (!trialRunning) {
+		return;
+	}
+	$('#t' + currentTrial + '_response').val("diff");
+	NextTrial();
+}
+
+function NextTrial() {
+	trialRunning = false;
+
+	var currentTime = new Date().getTime();
+	var RT = currentTime - startTrialTime;
+	$('#t' + currentTrial + '_rt').val(RT);
+	
+	$('#t' + currentTrial + '_d2').hide();	
+	$('#startTrial').show();
+	currentTrial++;
+
+        if(currentTrial==4){
+		$('#submitButton').show();
+        }
+}
+
+function StartTrial() {
+	if (trialRunning) {
+		return;
+	}
+	trialRunning = true;
+	
+	$('#startTrial').hide();
+	$('#t' + currentTrial + '_d1').show();
+	
+	setTimeout(function() {
+		$('#t' + currentTrial + '_d1').hide();
+	}, 1000);
+	
+	setTimeout(function() {
+		$('#t' + currentTrial + '_d2').show();
+		startTrialTime = new Date().getTime();
+	}, 1500);	
+}
+</script>
+
+<style>
+
+#container {
+	position: relative;
+	background: gray;
+	width: 320px;
+	height: 240px;
+	margin: 30px;
+}
+
+.displays {
+	position: absolute;
+	display: none;
+	top: 0px;
+	left: 0px;
+}
+
+#startTrial {
+	position: absolute;
+	top: 100px;
+	left: 100px;
+	font-weight: bold;
+	color: white;
+	font-size: 14pt;
+}
+</style>
+
+
+<h3>Remember the colors</h3>
+
+You'll see several colored squares flashed briefly. Remember their colors. After a delay, you'll see a new set of colored squares. Either they will all be the same as before or one will have changed color. Press the spacebar to start each trial.
+
+<div id="container">
+ <a href="javascript:StartTrial()" id="startTrial">Start Trial</a>
+ <img class="displays" id="t1_d1" src="1_display1.png">
+ <img class="displays" id="t1_d2" src="1_display2.png">
+	
+ <img class="displays" id="t2_d1" src="2_display1.png">
+ <img class="displays" id="t2_d2" src="2_display2.png">
+ 
+ <img class="displays" id="t3_d1" src="3_display1.png">
+ <img class="displays" id="t3_d2" src="3_display2.png"> 
+</div>
+<form action="../databases/score.php" method="POST">
+	<input type="hidden" id="t1_response" name="t1_response" value="">
+	<input type="hidden" id="t1_rt" name="t1_rt" value="">
+
+	<input type="hidden" id="t2_response" name="t2_response" value="">
+	<input type="hidden" id="t2_rt" name="t2_rt" value="">
+
+	<input type="hidden" id="t3_response" name="t3_response" value="">
+	<input type="hidden" id="t3_rt" name="t3_rt" value="">
+
+	Press 's' if the two displays are the same. Press 'd' if a color changed (different).<br><br>
+	<label for="id">Your id: </label>
+	<input type="text" id="id" name="id">
+	<input type="submit" id="submitButton" name="submitButton">
+</form>

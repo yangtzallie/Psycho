@@ -1,0 +1,10 @@
+cat
+dog
+panda
+lion
+elephant
+table
+iphone
+bag
+pen
+cup
